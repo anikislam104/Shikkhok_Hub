@@ -6,6 +6,8 @@ import com.tutor.shikkhokhub.repository.UserRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService implements UserServiceInterface {
 
@@ -22,5 +24,17 @@ public class UserService implements UserServiceInterface {
         BeanUtils.copyProperties(user, userEntity);
         userRepository.save(userEntity);
         return user;
+    }
+
+    @Override
+    public List<User> getAllUser() {
+        List<UserEntity> userEntities = userRepository.findAll();
+        List<User> users = userEntities.stream().map(userEntity -> new User(
+            userEntity.getId(),
+                userEntity.getName(),
+                userEntity.getEmail(),
+                userEntity.getPassword()
+        )).collect(java.util.stream.Collectors.toList());
+        return users;
     }
 }
